@@ -59,7 +59,7 @@ const createProduct = (req, res) => {
 }
 
 const updateProductStock = (req, res) => {
-    
+
     const quantity = req.body.quantity;
     const id = req.params.id;
 
@@ -69,9 +69,20 @@ const updateProductStock = (req, res) => {
     })
 }
 
+const deleteProductById = (req, res) => {
+    const id = req.params.id;
+
+    client.query("DELETE FROM menu_items WHERE id = $1", [id], (error, response) => {
+        error ? console.log(error) : console.log(response);
+        res.send({deleted: id});
+    })
+
+}
+
 module.exports = {
     queryAllProducts,
     queryProductById,
     createProduct,
-    updateProductStock
+    updateProductStock,
+    deleteProductById
 }
