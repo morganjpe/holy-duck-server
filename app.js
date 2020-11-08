@@ -1,45 +1,31 @@
 // libs
+require('dotenv').config();
 const express = require('express');
+const socketIO = require('socket.io');
 const cors = require('cors');
 const bodyparser = require('body-parser');
+
+const {attachRoutes} = require('./src/routes');
 
 // create app
 const app = express();
 const PORT = 3001;
 
-// database queries
-const {
-    queryAllProducts,
-    queryProductById,
-    createProduct,
-    updateProductStock,
-    deleteProductById
-} = require('./src/queries')
+// socket.io 
+const http = require('http').createServer(app);
+const io = socketIO(http);
 
 // middleware
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: process.env.ORIGIN
 }))
 
 app.use(bodyparser.json());
 
 // routing 
-
-// get - read
-app.get('/', (req, res) => res.send({holyduck: 'QUAAAAACCKK'}));
-app.get('/menu_items', queryAllProducts)
-app.get('/menu_items:id', queryProductById)
-
-// post - create
-app.post('/menu_items', createProduct)
-
-// put - update
-app.put('/update_stock:id', updateProductStock)
-
-// delete 
-app.delete('/menu_items:id', deleteProductById)
+attachRoutes(app, io);
 
 // serve application 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log(`listening on port http://localhost:${PORT}`)
 })

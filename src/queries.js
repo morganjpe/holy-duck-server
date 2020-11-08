@@ -4,13 +4,10 @@ const client = createDatabaseConnection()
 
 client.connect();
 
-// const sendResponse = (error, response) => {
-//     if(error) {
-//         console.log(error);
-//     } else {
-//         res.send(response.rows)
-//     }
-// }
+
+/* 
+ * QUERYING MENU ITEMS
+ */
 
 const queryAllProducts = (req, res) => client.query("SELECT * FROM menu_items", (error, response) => {
     if(error) {
@@ -32,35 +29,19 @@ const queryProductById = (req, res) => {
 }
 
 const createProduct = (req, res) => {
-
-    // const {
-    //     name,
-    //     price,
-    //     desc,
-    //     price,
-    //     stock,
-    //     group,
-    //     img,
-    //     allergens,
-    // } = req.body;
-
-    const keys = Object.keys(
+    const vals = Object.keys(
         req.body
     ).map(key => req.body[key])
 
-    client.query("INSERT INTO menu_items (name) VALUES ($1)", keys, (error, response) => {
+    client.query("INSERT INTO menu_items (allergens, name, \"desc\", price, stock, img, \"group\") VALUES ($1, $2, $3, $4, $5, $6, $7)", vals, (error, response) => {
         error ? console.log(error) : console.log(response);
         res.send({updated: true})
     })
-
-    console.log(keys);
-    res.send({connected: 'true'})
-
 }
 
 const updateProductStock = (req, res) => {
 
-    const quantity = req.body.quantity;
+    const quantity = req.body.stock;
     const id = req.params.id;
 
     client.query("UPDATE menu_items SET stock = $1 WHERE id = $2", [quantity, id], (error, response) => {
@@ -79,10 +60,80 @@ const deleteProductById = (req, res) => {
 
 }
 
+/* 
+ * QUERYING ORDERS
+ */
+const getAllOrders = (req, res) => {
+    client.query(
+        "SELECT * FROM orders",
+        (error, response) => {
+            if(error) {
+                console.log(error);
+            } else {
+                res.send(response.rows);
+            } 
+        }
+    )
+}
+
+const getOrderByRef = (req, res) => {
+    const ref = req.params.id;
+    
+    client.query(
+        "SELECT * FROM orders WHERE reference = $1", 
+        [ref],
+        (error, response) => {
+            if(error) {
+                console.log(error);
+            } else {
+                res.send(response[row][0]);
+            }
+        }
+    )
+}
+
+const updateOrderByRef = (req, res) => {
+    const ref = req.params.id;
+    const {status} = req.body;
+    client.query(
+        "UPDATE orders SET status = $1 WHERE reference = $2",
+        [status, ref],
+        (error, response) => {
+            if(error) {
+                console.log(error);
+            } else {
+                res.send({updated: ref});
+            }
+        }
+    )
+}
+
+const deleteOrderById = (req, res) => {
+    const ref = req.params.id;
+    client.query(
+        "DELETE FROM orders WHERE reference = $1",
+        [ref],
+        (error) => {
+            if(error) {
+                console.log(error)
+            } else {
+                res.send({deleted: ref});
+            }
+        }
+    )
+}
+
+
 module.exports = {
+    // menu_items
     queryAllProducts,
     queryProductById,
     createProduct,
     updateProductStock,
-    deleteProductById
+    deleteProductById,
+    // orders
+    getAllOrders,
+    getOrderByRef,
+    updateOrderByRef,
+    deleteOrderById
 }
