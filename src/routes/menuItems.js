@@ -7,20 +7,21 @@ const {
     deleteProductById
 } = require('../queries');
 
-const menuItemRoutes = (app, io) => {
+const menuItemRoutes = (router) => {
+
     // get - read
-    app.get('/', (req, res) => res.send({holyduck: 'QUAAAAACCKK'}));
-    app.get('/menu_items', queryAllProducts)
-    app.get('/menu_items:id', queryProductById)
+    router.get('/', (req, res) => res.send({holyduck: 'QUAAAAACCKK'}));
+    router.get('/menu_items', queryAllProducts)
+    router.get('/menu_items:id', queryProductById)
 
     // post - create
-    app.post('/menu_items', createProduct)
+    router.post('/menu_items', createProduct)
 
     // put - update
-    app.put('/update_stock:id', updateProductStock)
+    router.put('/update_stock:id', updateProductStock)
 
     // delete 
-    app.delete('/menu_items:id', deleteProductById)
+    router.delete('/menu_items:id', deleteProductById)
 }
 
 module.exports = menuItemRoutes;

@@ -1,23 +1,27 @@
 const {
     getAllOrders,
     getOrderByRef,
-    updateOrderByRef
+    updateOrderByRef,
+    deleteOrderById,
+    createOrder
 } = require('../queries');
 
-const orderRoutes = (app, io) => {
+const orderRoutes = (router, ws) => {
 
     // get orders
-    app.get('/orders', getAllOrders)
-    app.get('./orders:id', getOrderByRef)
+    router.get('/orders', getAllOrders)
+    router.get('./orders:id', getOrderByRef)
 
     // // create order
-    // app.post('/orders')
+    router.post('/orders',(req, res) => {
+        createOrder(req, res)
+    })
     
     // update orders
-    app.put('/orders:id', updateOrderByRef)
+    router.put('/orders:id', updateOrderByRef)
 
     // // delete orders 
-    // app.delete('/orders:id');
+    router.delete('/orders:id', deleteOrderById);
 
 }
 

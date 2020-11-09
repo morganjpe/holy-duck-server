@@ -1,10 +1,13 @@
 const menuItemRoutes = require('./menuItems');
 const orderRoutes = require('./orders');
 
-const attachRoutes = (app, io) => {
+const WebSocket = require('ws');
 
-    menuItemRoutes(app, io);
-    orderRoutes(app, io)
+const attachRoutes = (router) => {
+
+
+    menuItemRoutes(router);
+    orderRoutes(router)
 }
 
 module.exports = {

@@ -123,6 +123,30 @@ const deleteOrderById = (req, res) => {
     )
 }
 
+const createOrder = (req, res) => {
+    return new Promise((resolve, reject) => {
+    const {
+        reference, order, address, status
+    } = req.body;
+
+        client.query(
+            `INSERT INTO orders (reference, \"order\", address, status) VALUES ( $1, $2, $3, $4)`,
+            [reference, order, address, status],
+            (error) => {
+                
+                    if(error) {
+                        console.log(error);
+                        reject(error)
+                    } else {
+                        res.send({ref: reference})
+                        resolve(reference);
+                    }
+            
+            }
+        )
+    })
+}
+
 
 module.exports = {
     // menu_items
@@ -135,5 +159,6 @@ module.exports = {
     getAllOrders,
     getOrderByRef,
     updateOrderByRef,
-    deleteOrderById
+    deleteOrderById,
+    createOrder
 }
