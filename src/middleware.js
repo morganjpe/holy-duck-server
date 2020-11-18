@@ -18,6 +18,7 @@ var cors = function (req, res, next) {
     "http://localhost:3000",
     "https://holyduck-8ecjz.ondigitalocean.app/",
   ];
+  console.log(res);
   var origin = req.headers.origin;
   if (whitelist.indexOf(origin) > -1) {
     res.setHeader("Access-Control-Allow-Origin", origin);

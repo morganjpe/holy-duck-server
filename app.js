@@ -19,7 +19,7 @@ const router = express.Router();
 const server = http.createServer(app);
 
 // middleware
-app.use(cors());
+app.use(cors);
 
 app.use(bodyparser.json());
 app.use(router);
