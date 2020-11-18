@@ -3,7 +3,6 @@ require("dotenv").config();
 
 // libs
 const express = require("express");
-const cors = require("cors");
 const bodyparser = require("body-parser");
 const http = require("http");
 const socket = require("socket.io");
@@ -12,13 +11,15 @@ const eventEmitter = require("events");
 const { attachRoutes } = require("./src/routes");
 const authRoutes = require("./src/routes/auth");
 
+const { cors } = require("./src/middleware");
+
 // create app
 const app = express();
 const router = express.Router();
 const server = http.createServer(app);
 
 // middleware
-app.use(cors({ origin: process.env.ORIGIN }));
+app.use(cors());
 
 app.use(bodyparser.json());
 app.use(router);

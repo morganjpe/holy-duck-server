@@ -13,6 +13,21 @@ const jwtAuthorisationMiddleware = (req, res, next) => {
   }
 };
 
+var cors = function (req, res, next) {
+  var whitelist = [
+    "http://localhost:3000",
+    "https://holyduck-8ecjz.ondigitalocean.app/",
+  ];
+  var origin = req.headers.origin;
+  if (whitelist.indexOf(origin) > -1) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+};
+
 module.exports = {
   jwtAuthorisationMiddleware,
+  cors,
 };
