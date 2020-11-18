@@ -38,6 +38,10 @@ io.on("connection", (socket) => {
 });
 
 // routing
+router.get("/", (req, res) => {
+  res.send({ holyduck: "QUAAACKK" });
+});
+
 attachRoutes(router, order_event);
 authRoutes(router);
 

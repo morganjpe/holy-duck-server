@@ -11,5 +11,10 @@
     "pg": "^8.4.2",
     "socket.io": "^3.0.1",
     "ws": "^7.4.0"
-  }
+  },
+  "name": "holy-duck-server",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "https://github.com/morganjpe/holy-duck-server.git",
+  "license": "MIT"
 }

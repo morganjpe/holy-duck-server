@@ -1,27 +1,35 @@
 // database queries
 const {
-    queryAllProducts,
-    queryProductById,
-    createProduct,
-    updateProductStock,
-    deleteProductById
-} = require('../queries');
+  queryAllProducts,
+  queryProductById,
+  createProduct,
+  updateProductStock,
+  deleteProductById,
+} = require("../queries");
+
+const { jwtAuthorisationMiddleware } = require("../middleware");
 
 const menuItemRoutes = (router) => {
+  // get - read
+  router.get("/menu_items", queryAllProducts);
+  router.get("/menu_items:id", queryProductById);
 
-    // get - read
-    router.get('/', (req, res) => res.send({holyduck: 'QUAAAAACCKK'}));
-    router.get('/menu_items', queryAllProducts)
-    router.get('/menu_items:id', queryProductById)
+  // post - create
+  router.post("/menu_items", jwtAuthorisationMiddleware, createProduct);
 
-    // post - create
-    router.post('/menu_items', createProduct)
+  // put - update
+  router.put(
+    "/update_stock:id",
+    jwtAuthorisationMiddleware,
+    updateProductStock
+  );
 
-    // put - update
-    router.put('/update_stock:id', updateProductStock)
-
-    // delete 
-    router.delete('/menu_items:id', deleteProductById)
-}
+  // delete
+  router.delete(
+    "/menu_items:id",
+    jwtAuthorisationMiddleware,
+    deleteProductById
+  );
+};
 
 module.exports = menuItemRoutes;

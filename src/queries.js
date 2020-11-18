@@ -8,6 +8,63 @@ const client = createDatabaseConnection();
 
 client.connect();
 
+const initTables = () => {
+  client.query(
+    `CREATE TABLE IF NOT EXISTS menu_items (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(50) NOT NULL,
+      "desc" VARCHAR(250) NOT NULL,
+      price NUMERIC(5, 2) NOT NULL,
+      stock SMALLINT NOT NULL,
+      "group" VARCHAR(25) NOT NULL,
+      img VARCHAR(1000) NOT NULL,
+      allergens JSONB 
+    )`,
+    (error) => {
+      if (error) {
+        console.log(error, "error creating a table for menu_items");
+      }
+    }
+  );
+
+  client.query("CREATE EXTENSION IF NOT EXISTS citext", (error) => {
+    if (error) console.log(error, "citext error");
+  });
+
+  client.query(
+    `CREATE TABLE IF NOT EXISTS orders (
+      reference VARCHAR(200) NOT NULL,
+      "order" JSONB NOT NULL,
+      address JSONB NOT NULL,
+      status VARCHAR(45) NOT NULL
+    )`,
+    (error) => {
+      if (error) {
+        console.log(error, "error creating table for orders");
+      }
+    }
+  );
+
+  client.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto`, (error) => {
+    if (error) console.log(error);
+  });
+
+  client.query(
+    `CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email CITEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL
+    )`,
+    (error) => {
+      if (error) {
+        console.log(error, "error creating table for users");
+      }
+    }
+  );
+};
+
+initTables();
+
 /*
  * QUERYING MENU ITEMS
  */
@@ -133,7 +190,7 @@ const deleteOrderById = (req, res) => {
 };
 
 const deleteAllOrders = (req, res) => {
-  client.query("DELETE * FROM orders", (error) => {
+  client.query("DELETE FROM orders", (error) => {
     error ? console.log(error) : res.send({ deleted: true });
   });
 };
@@ -175,7 +232,6 @@ const authenticateUser = async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.rows[0].password);
 
     if (!validPassword) {
-      console.log(validPassword, password);
       return res
         .status(401)
         .send({ error: "the email or password is incorrect" });
@@ -187,14 +243,6 @@ const authenticateUser = async (req, res) => {
     console.log(err);
   }
 };
-
-// const authoriseUser = (req, res) => {
-//   //   const jtwToken = req.header("token");
-//   //   if (!jtwToken) {
-//   //     return res.status(403).send({ error: "not authorised" });
-//   //   }
-//   //   const payload = jwt.verify(jtwToken, process.env.JWT);
-// };
 
 module.exports = {
   // menu_items
@@ -212,5 +260,4 @@ module.exports = {
   deleteAllOrders,
   // authenticate
   authenticateUser,
-  //   authoriseUser,
 };

@@ -7,26 +7,28 @@ const {
   deleteAllOrders,
 } = require("../queries");
 
+const { jwtAuthorisationMiddleware } = require("../middleware");
+
 const orderRoutes = (router, event) => {
   // get orders
-  router.get("/orders", getAllOrders);
-  router.get("./orders:id", getOrderByRef);
+  router.get("/orders", jwtAuthorisationMiddleware, getAllOrders);
+  router.get("./orders:id", jwtAuthorisationMiddleware, getOrderByRef);
 
-  // // create order
-  router.post("/orders", (req, res) => {
+  // create order
+  router.post("/orders", jwtAuthorisationMiddleware, (req, res) => {
     createOrder(req, res).then((ref) => {
       event.emit("message", ref);
     });
   });
 
   // update orders
-  router.put("/orders:id", updateOrderByRef);
+  router.put("/orders:id", jwtAuthorisationMiddleware, updateOrderByRef);
 
-  // // delete orders
-  router.delete("/orders:id", deleteOrderById);
+  // delete orders
+  router.delete("/orders:id", jwtAuthorisationMiddleware, deleteOrderById);
 
   // delete all orders
-  router.delete("/orders", deleteAllOrders);
+  router.delete("/orders", jwtAuthorisationMiddleware, deleteAllOrders);
 };
 
 module.exports = orderRoutes;
