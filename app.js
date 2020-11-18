@@ -7,11 +7,10 @@ const bodyparser = require("body-parser");
 const http = require("http");
 const socket = require("socket.io");
 const eventEmitter = require("events");
+const cors = require("cors");
 
 const { attachRoutes } = require("./src/routes");
 const authRoutes = require("./src/routes/auth");
-
-const { cors } = require("./src/middleware");
 
 // create app
 const app = express();
@@ -19,7 +18,14 @@ const router = express.Router();
 const server = http.createServer(app);
 
 // middleware
-app.use(cors);
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://holyduck-8ecjz.ondigitalocean.app/",
+    ],
+  })
+);
 
 app.use(bodyparser.json());
 app.use(router);
