@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const { createDatabaseConnection } = require("./databaseConnection");
 const jwtGenerator = require("./utils/jwtGenerator");
@@ -187,6 +188,14 @@ const authenticateUser = async (req, res) => {
   }
 };
 
+// const authoriseUser = (req, res) => {
+//   //   const jtwToken = req.header("token");
+//   //   if (!jtwToken) {
+//   //     return res.status(403).send({ error: "not authorised" });
+//   //   }
+//   //   const payload = jwt.verify(jtwToken, process.env.JWT);
+// };
+
 module.exports = {
   // menu_items
   queryAllProducts,
@@ -203,4 +212,5 @@ module.exports = {
   deleteAllOrders,
   // authenticate
   authenticateUser,
+  //   authoriseUser,
 };
